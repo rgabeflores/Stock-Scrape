@@ -1,4 +1,1 @@
-urllib2
-urllib
-json
-random
+bs4
