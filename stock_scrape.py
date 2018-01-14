@@ -7,7 +7,6 @@ from time import sleep
 
 import ux
 
-
 MAIN_OPTIONS = (
 	"View Portfolio",
 	"Add Stock Symbol to Portfolio"
