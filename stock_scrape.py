@@ -4,37 +4,9 @@ from bs4 import BeautifulSoup
 from contextlib import contextmanager
 import re
 from time import sleep
-import psutil
-import os
 
 import ux
-import statistics as stats
 
-def memory_usage():
-    process = psutil.Process(os.getpid())
-    mem = process.memory_info()[0] / float(2 ** 20)
-    return mem
-
-'''
-	Quickly track a portfolio.
-
-	List Pages ex.
-	https://finance.yahoo.com/world-indices
-
-	Individual Summary Page Quote ex.
-	https://finance.yahoo.com/quote/%5EGSPC?p=%5EGSPC (S&P 500)
-
-	• Search Options?
-		- Search by comma separated input list?
-	• File I/O (txt, csv, spreadsheet, etc.)
-		- Quick Balance Sheet Analysis
-		- Use a text file to quickly feed search args
-		- Use text file to save popular stock symbols
-		- Feed Menu Options from text file args?
-	• Implement  visuals
-		- Graphs
-		- Momentum Screening
-'''
 
 MAIN_OPTIONS = (
 	"View Portfolio",
@@ -42,13 +14,14 @@ MAIN_OPTIONS = (
 )
 
 BASE_URL = "https://finance.yahoo.com/quote/"
+FILENAME = "portfolio.csv"
 
 def get_url(param=None):
 	if param is None:
 		param = quote(input("\n\tSearch for a symbol: ").upper())
 	else:
 		param = quote(param)
-	return param + "?p=" + param
+	return "{}?p={}".format(param, param) 
 
 @contextmanager
 def retrieve(url):
@@ -58,14 +31,10 @@ def retrieve(url):
 	yield soup
 
 @contextmanager
-def scrape(url):
-	'''
-		TO-DO:
-		• Scrape Labels to get keys
-		• Use Generator
-	'''
+def scrape(url, symbol):
 	with retrieve(url) as content: 
 		yield {
+				"Stock Symbol": symbol,
 				"Previous Close": content.find('td', {'data-test': "PREV_CLOSE-value"}),
 				"Open": content.find('td', {'data-test': "OPEN-value"}),
 				"Bid": content.find('td', {'data-test': "BID-value"}),
@@ -100,36 +69,57 @@ def csv_input(filename=None):
 
 	for x in symbols:
 		for y in x:
-			with scrape(BASE_URL + get_url(y.strip())) as data:
+			y = y.strip()
+			with scrape(BASE_URL + get_url(y), y) as data:
 				display(data)
-				sleep(1)
+				sleep(0.5)
+
+def update_csv(filename=None):
+	if filename is None:
+		filename = input("\n\tEnter the name of the file for input:\n\t")
+		
+	try:
+		with open(filename, "a") as f:
+			row = input("\n\tEnter stock symbols separated by commas:\n\t")
+			print("\tAppending to file...")
+			f.write("\n{}".format(row))
+			print("\tFinished.\n")
+		with open(filename, "r") as f:
+			file_lines = (x for x in f.readlines())
+			print("\tUpdated List:")
+			for line in file_lines:
+				print("\t{}".format(line.strip()))
+			print("\n")
+	except FileNotFoundError as e:
+		print("File not found.")
 
 def display(content):
-	print("\n\n\t\t" + ("____" * 10))
-	print("\t\t" + ("____" * 10))
+	ui_separator = "\t\t{}".format("____" * 10)
+	print(ui_separator)
 
 	for key in content:
-		print("\t\t" + ("----" * 10))
-		print("\t\t" + str(key) + ": ", end="")
-		if not(content[key] is None):
-			print(content[key].get_text())
+		print("\t\t{}: ".format(str(key)), end="")
+		if content[key]:
+			if isinstance(content[key], str):
+				print(content[key])
+			else:
+				print(content[key].get_text())
 		else:
 			print("N/A")
-		print("\t\t" + ("----" * 10))
 		sleep(0.05)
 
-	print("\t\t" + ("____" * 10))
-	print("\t\t" + ("____" * 10) + "\n\n")				
+	print(ui_separator)
+	print("\n")
 
 def main():
-
+	
 	def main_loop():
 		choice = ux.get_user_choice(options=MAIN_OPTIONS)
 
 		if choice == 1:
-			csv_input()
+			csv_input(FILENAME)
 		else:
-			csv_input()
+			update_csv(FILENAME)
 		
 	cont = ux.to_continue(main_loop)
 
