@@ -1,8 +1,17 @@
 import unittest
 import logging
+import sys
 import stock_scrape
 
+
 logging.basicConfig(filename='stock_scrape.log', level=logging.WARNING)
+
+try:
+    with open('key.txt', 'r') as f:
+        API_KEY = f.readline().strip()
+except FileNotFoundError as e:
+    print("\n\tA text file containing the API key must be present and in the working directory.\n")
+    sys.exit()
 
 
 class TestStockScrape(unittest.TestCase):
