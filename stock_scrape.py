@@ -21,10 +21,9 @@ import sys
 logging.basicConfig(filename='stock_scrape.log', level=logging.INFO)
 
 # Constants
-API_KEY = ""  # Feed API key through text file args
 BASE_URL = "https://www.alphavantage.co/query?"
 
-FILENAME = "portfolio.csv"
+CSV_FILENAME = "portfolio.csv"
 
 
 def fswitch(x):
@@ -35,18 +34,17 @@ def fswitch(x):
 
 
 def get_url(func, sym):
-    global API_KEY
-
+    # LOG FILE IO FOR API KEY
     try:
-        with open("key.txt", 'r') as f:
+        with open("../key.txt", 'r') as f:
             API_KEY = f.readline().strip()
 
     except FileNotFoundError as e:
-        print("\n\tA text file containing the API key must be present and in the working directory.\n")
+        print("\n\tA text file containing the API key must be present and in the parent directory.\n")
         return
-
-    parameters = "function={}&symbol={}&apikey={}".format(func, quote(sym), API_KEY)
-    return BASE_URL + parameters
+    else:
+        parameters = "function={}&symbol={}&apikey={}".format(func, quote(sym), API_KEY)
+        return BASE_URL + parameters
 
 
 def retrieve(url):
