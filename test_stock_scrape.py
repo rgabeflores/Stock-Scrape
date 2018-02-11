@@ -30,6 +30,7 @@ class TestStockScrape(unittest.TestCase):
 
     def tearDown(self):
         print('\nRunning Micro Tear Down...\n\n')
+
     def test_fswitch(self):
         print('Testing fswitch(x)...')
 
@@ -40,13 +41,18 @@ class TestStockScrape(unittest.TestCase):
         expected = "TIME_SERIES_DAILY"
         result = stock_scrape.fswitch(2)
         self.assertEqual(result, expected)
+
     def test_get_url(self):
         print('Testing get_url(func, sym)...')
-        expected = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=KD5IR7D86O9BCZYI"
-        result = stock_scrape.get_url("TIME_SERIES_DAILY", "MSFT")
+        expected = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=5min&symbol=MSFT&apikey=KD5IR7D86O9BCZYI"
+        result = stock_scrape.get_url("TIME_SERIES_INTRADAY", "MSFT")
         self.assertEqual(result, expected)
 
-    
+    def test_parse_json(self):
+        content = stock_scrape.retrieve("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=5min&symbol=MSFT&apikey=KD5IR7D86O9BCZYI")
+        results = stock_scrape.parse_json(content)
+        for i in range(1, len(results) - 1):
+            self.assertEqual(len(results[i]), len(results[0]))
 
 
 if __name__ == "__main__":
