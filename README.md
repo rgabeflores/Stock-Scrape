@@ -1,9 +1,7 @@
-# Alphavantage Stock Scraper
-A stock scraper using Alphavantage API
+# Alpha Vantage Stock Scraper
+This script uses the Alpha Vantage API to retrieve a stock profile and visually plot its data. 
+*Currently Under Development*
 
-### Usage
-
-1. Create a text file containing your API key:
-	*key.txt*
-2. Enter Via CLI:  
-	*$> python stock_scrape.py key.txt*
+#### To Do
+* Add flexibility for different API function calls
+* Add legend w/ color correspondence
