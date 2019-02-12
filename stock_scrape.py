@@ -10,12 +10,16 @@ import pandas as pd
 import sys
 import logging
 
+# By default, info is logged to stock_scrape.log
 logging.basicConfig(filename='stock_scrape.log', level=logging.INFO)
 
 BASE_URL = "https://www.alphavantage.co/query?"
 
 
 def fswitch(x):
+    '''
+        Acts as a switch case
+    '''
     return {
         1: "TIME_SERIES_INTRADAY",
         2: "TIME_SERIES_DAILY"
@@ -23,6 +27,9 @@ def fswitch(x):
 
 
 def get_url(func, sym):
+    '''
+        Generates the API call based on user input and a key file containing the unique API key
+    '''
     try:
         with open("../key.txt", 'r') as f:
             API_KEY = f.readline().strip()
@@ -38,6 +45,9 @@ def get_url(func, sym):
 
 
 def retrieve(url):
+    '''
+        Makes a request to the AlphaVantage API
+    '''
     http_response = urlopen(url).read()
     try:
         json_data = loads(http_response)
@@ -71,7 +81,7 @@ def build_frame(data):
 
 
 def main():
-    symbol = 'MSFT'
+    symbol = 'MSFT' # MSFT (Microsoft) is hardcoded as an example
     content = retrieve(get_url(fswitch(2), symbol))
     df = build_frame(content)
 
