@@ -4,7 +4,7 @@ certifi==2017.7.27.1
 chardet==3.0.4
 cycler==0.10.0
 Cython==0.27.1
-Django==1.11.4
+Django==1.11.28
 djangorestframework==3.7.7
 ebaysdk==2.1.5
 et-xmlfile==1.0.1
