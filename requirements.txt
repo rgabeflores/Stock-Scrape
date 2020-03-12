@@ -32,7 +32,7 @@ openpyxl==2.4.8
 pandas==0.20.3
 pdfminer.six==20170720
 Pillow==4.2.1
-psutil==5.4.3
+psutil==5.6.6
 py2exe==0.9.2.2
 pyasn1==0.3.3
 pyasn1-modules==0.1.1
