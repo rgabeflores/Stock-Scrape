@@ -1,6 +1,5 @@
 from urllib.request import urlopen
 from urllib.parse import quote
-from contextlib import contextmanager
 from json import loads, JSONDecodeError
 from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
@@ -26,7 +25,7 @@ def fswitch(x):
     }[x]
 
 
-def get_url(func, sym):
+def generate_url(func, sym):
     '''
         Generates the API call based on user input and a key file containing the unique API key
     '''
@@ -81,8 +80,8 @@ def build_frame(data):
 
 
 def main():
-    symbol = 'MSFT' # MSFT (Microsoft) is hardcoded as an example
-    content = retrieve(get_url(fswitch(2), symbol))
+    symbol = 'MSFT'  # MSFT (Microsoft) is hardcoded as an example
+    content = retrieve(generate_url(fswitch(2), symbol))
     df = build_frame(content)
 
     # X-Axis Date Display Configurations
